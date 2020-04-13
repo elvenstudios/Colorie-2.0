@@ -6,6 +6,9 @@ final ThemeData theme = ThemeData(
   primaryColor: purple,
   accentColor: yellow,
   backgroundColor: white,
+  buttonColor: yellow,
+  dividerColor: grey_1,
+  errorColor: red,
 );
 
 // dark theme
