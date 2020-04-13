@@ -9,4 +9,4 @@ final ThemeData theme = ThemeData(
 );
 
 // dark theme
-// TODO:
+// (ndavis): https://trello.com/c/fubwAgbh/15-enable-dark-theme-option

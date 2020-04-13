@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
       body: Center(
         child: MaterialButton(
           onPressed: () => print('hi'),
-          child: Text('button'),
+          child: const Text('button'),
           color: Theme.of(context).primaryColor,
         ),
       ),
