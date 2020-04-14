@@ -1,6 +1,7 @@
 import 'package:colorie/models/log.dart';
 import 'package:colorie/providers/log_provider.dart';
 import 'package:colorie/screens/day_details_screen.dart';
+import 'package:colorie/screens/profile_screen.dart';
 import 'package:colorie/widgets/calorie_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -30,16 +31,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.end,
-                    children: const <Widget>[
-                      Text(
+                    children: <Widget>[
+                      const Text(
                         'Welcome',
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
-                        child: Placeholder(
-                          fallbackHeight: 40,
-                          fallbackWidth: 40,
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Hero(
+                          tag: 'profile',
+                          child: Material(
+                            child: InkWell(
+                              onTap: () => Navigator.of(context).push<dynamic>(
+                                MaterialPageRoute<dynamic>(builder: (BuildContext context) => ProfileScreen()),
+                              ),
+                              child: const Placeholder(
+                                fallbackHeight: 40,
+                                fallbackWidth: 40,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ],
