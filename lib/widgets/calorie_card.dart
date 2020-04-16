@@ -1,6 +1,7 @@
 import 'package:colorie/theme/brand_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 
 class CalorieCard extends StatelessWidget {
   const CalorieCard({
@@ -11,7 +12,7 @@ class CalorieCard extends StatelessWidget {
   });
 
   final BorderRadius borderRadius;
-  final String date;
+  final DateTime date;
   final int calorieGoal;
   final int caloriesConsumed;
 
@@ -23,13 +24,26 @@ class CalorieCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         color: Theme.of(context).primaryColor,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Text(
-              date,
-              style: const TextStyle(
-                color: white,
-              ),
+            Row(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    showDatePicker(
+                      context: context,
+                      initialDate: date,
+                      firstDate: DateTime(2019),
+                      lastDate: DateTime(2222),
+                    );
+                  },
+                  child: Text(
+                    '${DateFormat('MMMMEEEEd').format(date)}',
+                    style: const TextStyle(
+                      color: white,
+                    ),
+                  ),
+                ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),

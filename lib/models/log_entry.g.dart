@@ -8,16 +8,15 @@ part of 'log_entry.dart';
 
 class LogEntryAdapter extends TypeAdapter<LogEntry> {
   @override
-  final int typeId = 1;
+  final typeId = 1;
 
   @override
   LogEntry read(BinaryReader reader) {
-    final int numOfFields = reader.readByte();
-    final Map<int, dynamic> fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    var numOfFields = reader.readByte();
+    var fields = <int, dynamic>{
+      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return LogEntry(
-      // ignore: avoid_as
       name: fields[0] as String,
     );
   }

@@ -2,6 +2,7 @@ import 'package:colorie/models/log.dart';
 import 'package:colorie/models/log_entry.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 
 ///
 /// Log Provider.
@@ -16,73 +17,62 @@ class LogProvider with ChangeNotifier {
   LogProvider._();
   static final LogProvider _singleton = LogProvider._();
 
+  // selected day
+  DateTime _selectedDay;
+
+  // returns the selected day
+  DateTime get selectedDay => _selectedDay ?? DateTime.now();
+
+  // sets the selected day
+  set selectedDay(DateTime dateTime) {
+    _selectedDay = dateTime;
+    notifyListeners();
+  }
+
   // name of hive box
-  final String hiveBox = 'logs';
+  final String hiveBox = 'logs-1';
 
-  // used to go forward and backwards in the log view
-  int _dayOffset = 0;
-
-  // set the new offset, notify listeners
-  set dayOffset(int value) {
-    _dayOffset = value;
-    generateLogForDay();
-    notifyListeners();
+  // creates a log at a given day
+  Future<void> createLog(DateTime dateTime) async {
+    final LazyBox<Log> box = await Hive.openLazyBox(hiveBox);
+    await box.put(DateFormat('MMMMEEEEd').format(dateTime), Log(entries: <LogEntry>[], date: dateTime));
   }
 
-  // get the day offset
-  int get dayOffset => _dayOffset;
+  // given a date time, return the log for that date time
+  Future<Log> getLog(DateTime dateTime) async {
+    // if none exists, create it
 
-  // creates a log and stores it into Hive
-  Future<void> _createLog(String key, Log value) async {
-    final Box<Log> box = await Hive.openBox(hiveBox);
-    box.put(key, value);
-  }
-
-  // the currently selected log
-  Log _selectedLog;
-
-  // sets the selected log
-  set selectedLog(Log value) {
-    _selectedLog = value;
-    notifyListeners();
-  }
-
-  // returns the selected log,
-  Log get selectedLog {
-    return _selectedLog;
-  }
-
-  // attempts to find a log for the current selected date
-  // if it fails, it generates one
-  Future<void> generateLogForDay() async {
-    final Box<Log> box = await Hive.openBox(hiveBox);
-    Log log = box.get(dateTimeString());
+    final LazyBox<Log> box = await Hive.openLazyBox(hiveBox);
+    final Log log = await box.get(DateFormat('MMMMEEEEd').format(dateTime));
     // if a log exists, return it
     if (log != null) {
-      selectedLog = log;
+      return log;
     } else {
       // if no log, create one and return it
-      await _createLog(dateTimeString(), Log(entries: <LogEntry>[]));
-      log = box.get(dateTimeString());
-      selectedLog = log;
+      await createLog(dateTime);
+      return await box.get(dateTime);
     }
   }
 
-  // update the log saved in storage
-  Future<void> updateLog() async {
-    final Box<Log> box = await Hive.openBox(hiveBox);
-
-    await box.put(dateTimeString(), selectedLog);
-    notifyListeners();
+  // given an array of date times, return the logs for those date times
+  Future<List<Log>> getLogs(List<DateTime> dateTimes) async {
+    final List<Log> logs = <Log>[];
+    // get the log at each datetime, then return the list.
+    for (int i = 0; i < dateTimes.length; i++) {
+      final Log log = await getLog(dateTimes[i]);
+      logs.add(log);
+    }
+    return logs;
   }
 
-  // get a string version of the current day, formatted in a way
-  // that Hive (local storage) can use as a key.
-  String dateTimeString() {
-    // multiply by -1 to avoid confusion when "subtracting" a day.
-    final DateTime date = DateTime.now().subtract(Duration(days: dayOffset * -1));
-    final String dateString = '${date.month}-${date.day}-${date.year}';
+  // given a log and a date, replace the log at that date
+  Future<void> updateLog(Log log, DateTime dateTime) async {
+    final LazyBox<Log> box = await Hive.openLazyBox(hiveBox);
+    box.put(DateFormat('MMMMEEEEd').format(dateTime), log);
+  }
 
-    return dateString;
+  // selected log will always be the log at the selected dateTime
+  Future<Log> get selectedLog async {
+    return await getLog(selectedDay);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:colorie/models/log.dart';
 import 'package:colorie/models/log_entry.dart';
 import 'package:colorie/providers/log_provider.dart';
+import 'package:colorie/providers/member_provider.dart';
 import 'package:colorie/screens/home_screen.dart';
 import 'package:colorie/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +14,6 @@ Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(LogAdapter());
   Hive.registerAdapter(LogEntryAdapter());
-
-  // generate the log for the given day
-  // so we have something to show when the app builds
-  await LogProvider().generateLogForDay();
 
   runApp(App());
 }
@@ -33,6 +30,9 @@ class _AppState extends State<App> {
       providers: <ChangeNotifierProvider<ChangeNotifier>>[
         ChangeNotifierProvider<LogProvider>(
           create: (_) => LogProvider(),
+        ),
+        ChangeNotifierProvider<MemberProvider>(
+          create: (_) => MemberProvider(),
         )
       ],
       child: MaterialApp(
