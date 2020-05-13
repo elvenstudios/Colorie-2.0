@@ -9,6 +9,12 @@ final ThemeData theme = ThemeData(
   buttonColor: yellow,
   dividerColor: grey_1,
   errorColor: red,
+//  colorScheme: ColorScheme(
+//    background: Colors.green,
+//    primary: purple,
+//    onBackground: purple,
+//    primaryVariant: yellow,
+//  ),
 );
 
 // dark theme

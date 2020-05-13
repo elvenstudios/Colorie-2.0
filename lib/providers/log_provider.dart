@@ -30,12 +30,12 @@ class LogProvider with ChangeNotifier {
   }
 
   // name of hive box
-  final String hiveBox = 'logs-1';
+  final String hiveBox = 'logs-2';
 
   // creates a log at a given day
   Future<void> createLog(DateTime dateTime) async {
     final LazyBox<Log> box = await Hive.openLazyBox(hiveBox);
-    await box.put(DateFormat('MMMMEEEEd').format(dateTime), Log(entries: <LogEntry>[], date: dateTime));
+    await box.put(DateFormat('yMMMMEEEEd').format(dateTime), Log(entries: <LogEntry>[], date: dateTime));
   }
 
   // given a date time, return the log for that date time
@@ -43,14 +43,14 @@ class LogProvider with ChangeNotifier {
     // if none exists, create it
 
     final LazyBox<Log> box = await Hive.openLazyBox(hiveBox);
-    final Log log = await box.get(DateFormat('MMMMEEEEd').format(dateTime));
+    final Log log = await box.get(DateFormat('yMMMMEEEEd').format(dateTime));
     // if a log exists, return it
     if (log != null) {
       return log;
     } else {
       // if no log, create one and return it
       await createLog(dateTime);
-      return await box.get(dateTime);
+      return await box.get(DateFormat('yMMMMEEEEd').format(dateTime));
     }
   }
 
@@ -65,10 +65,26 @@ class LogProvider with ChangeNotifier {
     return logs;
   }
 
+  Future<Log> getSelectedDayLog() async {
+    final Log today = await getLog(selectedDay);
+    return today;
+  }
+
+  // get the logs for the last 7 days
+  Future<List<Log>> getSevenDayLogHistory() async {
+    final List<DateTime> days = <DateTime>[];
+    for (int i = 0; i < 7; i++) {
+      days.add(DateTime.now().subtract(Duration(days: i)));
+    }
+    final List<Log> result = await getLogs(days);
+    return result;
+  }
+
   // given a log and a date, replace the log at that date
-  Future<void> updateLog(Log log, DateTime dateTime) async {
+  Future<void> updateLog(Log log) async {
     final LazyBox<Log> box = await Hive.openLazyBox(hiveBox);
-    box.put(DateFormat('MMMMEEEEd').format(dateTime), log);
+    box.put(DateFormat('yMMMMEEEEd').format(log.date), log);
+    notifyListeners();
   }
 
   // selected log will always be the log at the selected dateTime

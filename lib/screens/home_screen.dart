@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:colorie/models/log.dart';
+import 'package:colorie/models/log_entry.dart';
 import 'package:colorie/providers/log_provider.dart';
 import 'package:colorie/providers/member_provider.dart';
 import 'package:colorie/screens/day_details_screen.dart';
@@ -12,20 +15,19 @@ import 'package:provider/provider.dart';
 /// The HomeScreen of our application.
 /// Used to display the [Log]
 ///
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
+class HomeScreen extends StatelessWidget {
+  // gets the last 7 days logs, as well as selectedDay log;
+  Future<Map<String, dynamic>> getLogData(BuildContext context) async {
+    print('again');
+    final LogProvider logProvider = Provider.of<LogProvider>(context);
 
-class _HomeScreenState extends State<HomeScreen> {
-  // get the logs for the last 7 days
-  Future<List<Log>> getSevenDayLogHistory(BuildContext context) async {
-    final List<DateTime> days = <DateTime>[];
-    for (int i = 0; i < 7; i++) {
-      days.add(DateTime.now().subtract(Duration(days: i)));
-    }
-    final List<Log> result = await Provider.of<LogProvider>(context, listen: false).getLogs(days);
-    return result;
+    final List<Log> lastSeven = await logProvider.getSevenDayLogHistory();
+    final Log selectedDay = await logProvider.getSelectedDayLog();
+
+    return <String, dynamic>{
+      'last_seven': lastSeven,
+      'selected_day': selectedDay,
+    };
   }
 
   List<Widget> _buildLastSixDays(List<Log> logs) {
@@ -49,15 +51,19 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Consumer2<LogProvider, MemberProvider>(
           builder: (BuildContext context, LogProvider logProvider, MemberProvider memberProvider, _) {
+            print('------------------rebuilt home');
             return SingleChildScrollView(
-              child: FutureBuilder<List<Log>>(
-                builder: (BuildContext context, AsyncSnapshot<List<Log>> snapshot) {
-                  List<Log> logs;
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    logs = snapshot.data;
-                    // TODO: WHY ARE YOU NULL??????
-                    if (snapshot.data == null) {
-                      return Container();
+              child: FutureBuilder<Map<String, dynamic>>(
+                builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+                  List<Log> lastSevenLogs = <Log>[];
+                  Log selectedDayLog;
+
+                  if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
+                    if (snapshot.data != null) {
+                      lastSevenLogs = snapshot.data['last_seven'];
+                      selectedDayLog = snapshot.data['selected_day'];
+                      print("snap");
+                      print(snapshot.data['selected_day']);
                     }
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -100,26 +106,28 @@ class _HomeScreenState extends State<HomeScreen> {
                               type: MaterialType.transparency,
                               child: InkWell(
                                 onTap: () => Navigator.of(context).push<dynamic>(
-                                  MaterialPageRoute<dynamic>(builder: (BuildContext context) => DayDetailsScreen()),
+                                  MaterialPageRoute<dynamic>(
+                                    builder: (BuildContext context) => DayDetailsScreen(),
+                                  ),
                                 ),
                                 child: CalorieCard(
                                   calorieGoal: memberProvider.calorieGoal,
-                                  caloriesConsumed: logs[0].totalCaloriesConsumed(),
-                                  date: DateTime.now(),
+                                  caloriesConsumed: selectedDayLog.totalCaloriesConsumed(),
+                                  date: selectedDayLog.date,
                                   borderRadius: const BorderRadius.all(Radius.circular(16)),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        ..._buildLastSixDays(logs.sublist(1))
+                        if (lastSevenLogs.isNotEmpty) ..._buildLastSixDays(lastSevenLogs.sublist(1))
                       ],
                     );
                   } else {
                     return Container();
                   }
                 },
-                future: getSevenDayLogHistory(context),
+                future: getLogData(context),
               ),
             );
           },
