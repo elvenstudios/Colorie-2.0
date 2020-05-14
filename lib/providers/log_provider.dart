@@ -74,7 +74,7 @@ class LogProvider with ChangeNotifier {
   Future<List<Log>> getSevenDayLogHistory() async {
     final List<DateTime> days = <DateTime>[];
     for (int i = 0; i < 7; i++) {
-      days.add(DateTime.now().subtract(Duration(days: i)));
+      days.add(selectedDay.subtract(Duration(days: i)));
     }
     final List<Log> result = await getLogs(days);
     return result;

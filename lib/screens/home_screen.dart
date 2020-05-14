@@ -7,6 +7,7 @@ import 'package:colorie/providers/member_provider.dart';
 import 'package:colorie/screens/day_details_screen.dart';
 import 'package:colorie/screens/profile_screen.dart';
 import 'package:colorie/widgets/calorie_card.dart';
+import 'package:colorie/widgets/date_square.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,6 @@ import 'package:provider/provider.dart';
 class HomeScreen extends StatelessWidget {
   // gets the last 7 days logs, as well as selectedDay log;
   Future<Map<String, dynamic>> getLogData(BuildContext context) async {
-    print('again');
     final LogProvider logProvider = Provider.of<LogProvider>(context);
 
     final List<Log> lastSeven = await logProvider.getSevenDayLogHistory();
@@ -33,13 +33,12 @@ class HomeScreen extends StatelessWidget {
   List<Widget> _buildLastSixDays(List<Log> logs) {
     return logs.map<Widget>((Log log) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
-        child: Text(
-          '${log.totalCaloriesConsumed()}',
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 24.0,
+          vertical: 16,
+        ),
+        child: Row(
+          children: <DateSquare>[DateSquare(log.date)],
         ),
       );
     }).toList();
@@ -51,7 +50,6 @@ class HomeScreen extends StatelessWidget {
       body: SafeArea(
         child: Consumer2<LogProvider, MemberProvider>(
           builder: (BuildContext context, LogProvider logProvider, MemberProvider memberProvider, _) {
-            print('------------------rebuilt home');
             return SingleChildScrollView(
               child: FutureBuilder<Map<String, dynamic>>(
                 builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
@@ -120,6 +118,17 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                         ),
+                        if (lastSevenLogs.isNotEmpty)
+                          const Padding(
+                            padding: const EdgeInsets.only(top: 24, left: 24.0, bottom: 16),
+                            child: Text(
+                              'Daily Log',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         if (lastSevenLogs.isNotEmpty) ..._buildLastSixDays(lastSevenLogs.sublist(1))
                       ],
                     );
