@@ -26,7 +26,7 @@ class DateSquare extends StatelessWidget {
           children: <Widget>[
             Text(
               day,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),

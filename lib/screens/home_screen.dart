@@ -4,7 +4,6 @@ import 'package:colorie/providers/member_provider.dart';
 import 'package:colorie/screens/day_details_screen.dart';
 import 'package:colorie/screens/profile_screen.dart';
 import 'package:colorie/widgets/calorie_card.dart';
-import 'package:colorie/widgets/date_square.dart';
 import 'package:colorie/widgets/log_day.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -126,7 +125,7 @@ class HomeScreen extends StatelessWidget {
                       ],
                     );
                   } else {
-                    return Container();
+                    return const CircularProgressIndicator();
                   }
                 },
                 future: getLogData(context),

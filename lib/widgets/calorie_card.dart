@@ -1,5 +1,4 @@
 import 'package:colorie/models/log.dart';
-import 'package:colorie/models/log_entry.dart';
 import 'package:colorie/providers/log_provider.dart';
 import 'package:colorie/theme/brand_colors.dart';
 import 'package:flutter/material.dart';

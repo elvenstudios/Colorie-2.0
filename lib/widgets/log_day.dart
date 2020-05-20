@@ -1,6 +1,5 @@
 import 'package:colorie/models/log.dart';
 import 'package:colorie/providers/member_provider.dart';
-import 'package:colorie/theme/brand_colors.dart';
 import 'package:colorie/widgets/date_square.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -24,9 +23,9 @@ class LogDay extends StatelessWidget {
                 children: <Widget>[
                   Text('${log.totalCaloriesConsumed.ceil()} cal'),
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
                       child: SizedBox(
                         height: 8,
                         child: LinearProgressIndicator(

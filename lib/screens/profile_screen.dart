@@ -48,7 +48,7 @@ class ProfileScreen extends StatelessWidget {
                         children: <Widget>[
                           Text(
                             memberProvider.name,
-                            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                           ),
                           Text(
                             '${memberProvider.age}',

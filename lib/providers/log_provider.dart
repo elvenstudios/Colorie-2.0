@@ -83,8 +83,15 @@ class LogProvider with ChangeNotifier {
   // given a log and a date, replace the log at that date
   Future<void> updateLog(Log log) async {
     final LazyBox<Log> box = await Hive.openLazyBox(hiveBox);
-    box.put(DateFormat('yMMMMEEEEd').format(log.date), log);
+    await box.put(DateFormat('yMMMMEEEEd').format(log.date), log);
     notifyListeners();
+  }
+
+  // delete an entry from a log
+  Future<void> deleteEntry(Log log, LogEntry entry) async {
+    final int entryLocation = log.entries.indexOf(entry);
+    log.entries.removeAt(entryLocation);
+    await updateLog(log);
   }
 
   // selected log will always be the log at the selected dateTime
