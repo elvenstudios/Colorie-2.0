@@ -1,3 +1,5 @@
+import 'package:colorie/models/log.dart';
+import 'package:colorie/models/log_entry.dart';
 import 'package:colorie/providers/log_provider.dart';
 import 'package:colorie/theme/brand_colors.dart';
 import 'package:flutter/material.dart';
@@ -8,15 +10,13 @@ import 'package:provider/provider.dart';
 class CalorieCard extends StatelessWidget {
   const CalorieCard({
     @required this.borderRadius,
-    @required this.date,
     @required this.calorieGoal,
-    @required this.caloriesConsumed,
+    @required this.log,
   });
 
   final BorderRadius borderRadius;
-  final DateTime date;
-  final int calorieGoal;
-  final int caloriesConsumed;
+  final double calorieGoal;
+  final Log log;
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +34,14 @@ class CalorieCard extends StatelessWidget {
                     onTap: () async {
                       final DateTime selectedDate = await showDatePicker(
                         context: context,
-                        initialDate: date,
+                        initialDate: log.date,
                         firstDate: DateTime(2019),
                         lastDate: DateTime(2222),
                       );
                       logProvider.selectedDay = selectedDate;
                     },
                     child: Text(
-                      '${DateFormat('MMMMEEEEd').format(date)}',
+                      '${DateFormat('MMMMEEEEd').format(log.date)}',
                       style: const TextStyle(
                         color: white,
                       ),
@@ -55,7 +55,7 @@ class CalorieCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     Text(
-                      '$caloriesConsumed',
+                      '${log.totalCaloriesConsumed.ceil()}',
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 32,
@@ -63,7 +63,7 @@ class CalorieCard extends StatelessWidget {
                       ),
                     ),
                     const Text(
-                      'cal',
+                      ' cal',
                       strutStyle: StrutStyle(
                         fontSize: 32,
                       ),
@@ -80,9 +80,9 @@ class CalorieCard extends StatelessWidget {
                 child: SizedBox(
                   height: 8,
                   child: LinearProgressIndicator(
-                    value: caloriesConsumed / calorieGoal,
-                    backgroundColor: green.withOpacity(.25),
-                    valueColor: AlwaysStoppedAnimation<Color>(green),
+                    value: log.totalCaloriesConsumed / calorieGoal,
+                    backgroundColor: log.color.withOpacity(.25),
+                    valueColor: AlwaysStoppedAnimation<Color>(log.color),
                   ),
                 ),
               ),
@@ -103,7 +103,7 @@ class CalorieCard extends StatelessWidget {
                         Row(
                           children: <Widget>[
                             Text(
-                              '${calorieGoal - caloriesConsumed}',
+                              '${(calorieGoal - log.totalCaloriesConsumed).ceil()}',
                               style: const TextStyle(color: white, fontWeight: FontWeight.bold),
                             ),
                             const Text(
@@ -127,7 +127,7 @@ class CalorieCard extends StatelessWidget {
                         Row(
                           children: <Widget>[
                             Text(
-                              '$calorieGoal',
+                              '${calorieGoal.ceil()}',
                               style: const TextStyle(color: white, fontWeight: FontWeight.bold),
                             ),
                             const Text(

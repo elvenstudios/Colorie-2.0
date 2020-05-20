@@ -8,7 +8,7 @@ class MemberProvider with ChangeNotifier {
   int age = 27;
   double weight = 190;
   double heightInches = 68;
-  int calorieGoal = 1600;
+  double calorieGoal = 1600;
 
   // targets
   // red, green, yellow, orange percentages

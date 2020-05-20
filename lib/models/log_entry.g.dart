@@ -18,14 +18,20 @@ class LogEntryAdapter extends TypeAdapter<LogEntry> {
     };
     return LogEntry(
       name: fields[0] as String,
+      calories: fields[1] as double,
+      grams: fields[2] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, LogEntry obj) {
     writer
-      ..writeByte(1)
+      ..writeByte(3)
       ..writeByte(0)
-      ..write(obj.name);
+      ..write(obj.name)
+      ..writeByte(1)
+      ..write(obj.calories)
+      ..writeByte(2)
+      ..write(obj.grams);
   }
 }

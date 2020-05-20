@@ -1,13 +1,11 @@
-import 'dart:math';
-
 import 'package:colorie/models/log.dart';
-import 'package:colorie/models/log_entry.dart';
 import 'package:colorie/providers/log_provider.dart';
 import 'package:colorie/providers/member_provider.dart';
 import 'package:colorie/screens/day_details_screen.dart';
 import 'package:colorie/screens/profile_screen.dart';
 import 'package:colorie/widgets/calorie_card.dart';
 import 'package:colorie/widgets/date_square.dart';
+import 'package:colorie/widgets/log_day.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -37,9 +35,7 @@ class HomeScreen extends StatelessWidget {
           horizontal: 24.0,
           vertical: 16,
         ),
-        child: Row(
-          children: <DateSquare>[DateSquare(log.date)],
-        ),
+        child: LogDay(log),
       );
     }).toList();
   }
@@ -60,8 +56,6 @@ class HomeScreen extends StatelessWidget {
                     if (snapshot.data != null) {
                       lastSevenLogs = snapshot.data['last_seven'];
                       selectedDayLog = snapshot.data['selected_day'];
-                      print("snap");
-                      print(snapshot.data['selected_day']);
                     }
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -105,13 +99,12 @@ class HomeScreen extends StatelessWidget {
                               child: InkWell(
                                 onTap: () => Navigator.of(context).push<dynamic>(
                                   MaterialPageRoute<dynamic>(
-                                    builder: (BuildContext context) => DayDetailsScreen(),
+                                    builder: (BuildContext context) => const DayDetailsScreen(),
                                   ),
                                 ),
                                 child: CalorieCard(
+                                  log: selectedDayLog,
                                   calorieGoal: memberProvider.calorieGoal,
-                                  caloriesConsumed: selectedDayLog.totalCaloriesConsumed(),
-                                  date: selectedDayLog.date,
                                   borderRadius: const BorderRadius.all(Radius.circular(16)),
                                 ),
                               ),
@@ -120,7 +113,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         if (lastSevenLogs.isNotEmpty)
                           const Padding(
-                            padding: const EdgeInsets.only(top: 24, left: 24.0, bottom: 16),
+                            padding: EdgeInsets.only(top: 24, left: 24.0, bottom: 16),
                             child: Text(
                               'Daily Log',
                               style: TextStyle(

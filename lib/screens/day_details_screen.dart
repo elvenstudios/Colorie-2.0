@@ -78,9 +78,8 @@ class _DayDetailsScreenState extends State<DayDetailsScreen> {
                           child: Material(
                             type: MaterialType.transparency,
                             child: CalorieCard(
+                              log: log,
                               calorieGoal: memberProvider.calorieGoal,
-                              caloriesConsumed: log.totalCaloriesConsumed(),
-                              date: logProvider.selectedDay,
                               borderRadius: const BorderRadius.only(
                                 bottomLeft: Radius.circular(16),
                                 bottomRight: Radius.circular(16),
@@ -104,7 +103,7 @@ class _DayDetailsScreenState extends State<DayDetailsScreen> {
                   onTap: () async {
                     final Log today = await logProvider.getSelectedDayLog();
 
-                    today.entries.add(LogEntry(name: 'Apple'));
+                    today.entries.add(LogEntry(name: 'Apple', calories: 100, grams: 2));
                     logProvider.updateLog(today);
                   },
                   child: Container(
