@@ -1,3 +1,4 @@
+import 'package:colorie/models/calorie_density.dart';
 import 'package:colorie/models/log_entry.dart';
 import 'package:colorie/theme/brand_colors.dart';
 import 'package:flutter/widgets.dart';
@@ -11,7 +12,7 @@ import 'package:hive/hive.dart';
 part 'log.g.dart';
 
 @HiveType(typeId: 0)
-class Log {
+class Log extends CalorieDensity {
   Log({@required this.entries, @required this.date});
 
   @HiveField(0)
@@ -26,32 +27,15 @@ class Log {
     return entries.fold(0, (double previousValue, LogEntry logEntry) => previousValue + logEntry.calories);
   }
 
+  // total grams consumed
   double get totalGramsConsumed {
     return entries.fold(0, (double previousValue, LogEntry logEntry) => previousValue + logEntry.grams);
   }
 
   // Calculates calorie density based on calories and grams
+  @override
   double calculateDensity() {
     final double result = totalCaloriesConsumed / totalGramsConsumed;
     return result > 0 ? result : 0;
-  }
-
-  // gets the color for the average of all entries in the log
-  Color get color {
-    final double density = calculateDensity();
-
-    if (density <= 0.6) {
-      return green;
-    }
-
-    if (density <= 1.5) {
-      return yellow;
-    }
-
-    if (density <= 3.8) {
-      return orange;
-    }
-
-    return red;
   }
 }
