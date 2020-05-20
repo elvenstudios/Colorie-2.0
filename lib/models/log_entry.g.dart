@@ -20,18 +20,21 @@ class LogEntryAdapter extends TypeAdapter<LogEntry> {
       name: fields[0] as String,
       calories: fields[1] as double,
       grams: fields[2] as double,
+      type: fields[3] as FoodType,
     );
   }
 
   @override
   void write(BinaryWriter writer, LogEntry obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
       ..write(obj.calories)
       ..writeByte(2)
-      ..write(obj.grams);
+      ..write(obj.grams)
+      ..writeByte(3)
+      ..write(obj.type);
   }
 }

@@ -30,7 +30,7 @@ class LogProvider with ChangeNotifier {
   }
 
   // name of hive box
-  final String hiveBox = 'logs-3';
+  final String hiveBox = 'logs-5';
 
   // creates a log at a given day
   Future<void> createLog(DateTime dateTime) async {

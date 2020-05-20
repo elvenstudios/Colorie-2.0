@@ -1,3 +1,4 @@
+import 'package:colorie/enums/food_types.dart';
 import 'package:colorie/models/log.dart';
 import 'package:colorie/models/log_entry.dart';
 import 'package:colorie/providers/log_provider.dart';
@@ -14,7 +15,7 @@ Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(LogAdapter());
   Hive.registerAdapter(LogEntryAdapter());
-
+  Hive.registerAdapter(FoodTypeAdapter());
   runApp(App());
 }
 

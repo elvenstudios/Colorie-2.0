@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:colorie/enums/food_types.dart';
 import 'package:colorie/models/log.dart';
 import 'package:colorie/models/log_entry.dart';
 import 'package:colorie/providers/log_provider.dart';
@@ -18,8 +19,8 @@ class DayDetailsScreen extends StatefulWidget {
 }
 
 class _DayDetailsScreenState extends State<DayDetailsScreen> {
-  List<Widget> _buildLogItems(Log selectedDayLog) {
-    return selectedDayLog.entries.map<Widget>((LogEntry entry) {
+  List<Widget> _buildLogItems(List<LogEntry> entries) {
+    return entries.map<Widget>((LogEntry entry) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
         child: Text(
@@ -31,6 +32,22 @@ class _DayDetailsScreenState extends State<DayDetailsScreen> {
         ),
       );
     }).toList();
+  }
+
+  List<Widget> _buildBreakfastItems(Log log) {
+    return _buildLogItems(log.entries.where((LogEntry entry) => entry.type == FoodType.Breakfast).toList());
+  }
+
+  List<Widget> _buildLunchItems(Log log) {
+    return _buildLogItems(log.entries.where((LogEntry entry) => entry.type == FoodType.Lunch).toList());
+  }
+
+  List<Widget> _buildDinnerItems(Log log) {
+    return _buildLogItems(log.entries.where((LogEntry entry) => entry.type == FoodType.Dinner).toList());
+  }
+
+  List<Widget> _buildSnackItems(Log log) {
+    return _buildLogItems(log.entries.where((LogEntry entry) => entry.type == FoodType.Snack).toList());
   }
 
   @override
@@ -88,14 +105,42 @@ class _DayDetailsScreenState extends State<DayDetailsScreen> {
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(
-                          'Breakfast',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                      if (_buildBreakfastItems(log).isNotEmpty)
+                        const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text(
+                            'Breakfast',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      ),
-                      ..._buildLogItems(log),
+                      if (_buildBreakfastItems(log).isNotEmpty) ..._buildBreakfastItems(log),
+                      if (_buildLunchItems(log).isNotEmpty)
+                        const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text(
+                            'Lunch',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      if (_buildLunchItems(log).isNotEmpty) ..._buildLunchItems(log),
+                      if (_buildDinnerItems(log).isNotEmpty)
+                        const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text(
+                            'Dinner',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      if (_buildDinnerItems(log).isNotEmpty) ..._buildDinnerItems(log),
+                      if (_buildSnackItems(log).isNotEmpty)
+                        const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text(
+                            'Snacks',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      if (_buildSnackItems(log).isNotEmpty) ..._buildSnackItems(log)
                     ],
                   )),
                 ),
@@ -103,7 +148,7 @@ class _DayDetailsScreenState extends State<DayDetailsScreen> {
                   onTap: () async {
                     final Log today = await logProvider.getSelectedDayLog();
 
-                    today.entries.add(LogEntry(name: 'Apple', calories: 100, grams: 2));
+                    today.entries.add(LogEntry(name: 'Apple', calories: 100, grams: 2, type: FoodType.Lunch));
                     logProvider.updateLog(today);
                   },
                   child: Container(
