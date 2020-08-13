@@ -142,10 +142,11 @@ class _AddEntryState extends State<AddEntry> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                   onPressed: formComplete
                       ? () async {
+                          print(gramsController.text);
                           widget.log.entries.add(LogEntry(
                             name: nameController.text,
-                            calories: int.parse(caloriesController.text).toDouble(),
-                            grams: int.parse(gramsController.text).toDouble(),
+                            calories: double.parse(caloriesController.text).toDouble(),
+                            grams: double.parse(gramsController.text).toDouble(),
                             type: value,
                           ));
                           await logProvider.updateLog(widget.log);

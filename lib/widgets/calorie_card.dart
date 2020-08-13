@@ -11,11 +11,13 @@ class CalorieCard extends StatelessWidget {
     @required this.borderRadius,
     @required this.calorieGoal,
     @required this.log,
+    this.enableDatePicker = false,
   });
 
   final BorderRadius borderRadius;
   final double calorieGoal;
   final Log log;
+  final bool enableDatePicker;
 
   @override
   Widget build(BuildContext context) {
@@ -28,16 +30,20 @@ class CalorieCard extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   GestureDetector(
                     onTap: () async {
-                      final DateTime selectedDate = await showDatePicker(
-                        context: context,
-                        initialDate: log.date,
-                        firstDate: DateTime(2019),
-                        lastDate: DateTime(2222),
-                      );
-                      logProvider.selectedDay = selectedDate;
+                      if (enableDatePicker) {
+                        final DateTime selectedDate = await showDatePicker(
+                          context: context,
+                          initialDate: log.date,
+                          firstDate: DateTime(2019),
+                          lastDate: DateTime(2222),
+                        );
+                        logProvider.selectedDay = selectedDate;
+                      }
                     },
                     child: Text(
                       '${DateFormat('MMMMEEEEd').format(log.date)}',
@@ -46,6 +52,15 @@ class CalorieCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  if (DateFormat('MMMMEEEEd').format(log.date) != DateFormat('MMMMEEEEd').format(DateTime.now()))
+                    GestureDetector(
+                      onTap: () => logProvider.selectedDay = DateTime.now(),
+                      child: Icon(
+                        Icons.calendar_today,
+                        color: white,
+                        size: 16,
+                      ),
+                    ),
                 ],
               ),
               Padding(

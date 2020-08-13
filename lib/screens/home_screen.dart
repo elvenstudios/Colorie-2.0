@@ -3,6 +3,7 @@ import 'package:colorie/providers/log_provider.dart';
 import 'package:colorie/providers/member_provider.dart';
 import 'package:colorie/screens/day_details_screen.dart';
 import 'package:colorie/screens/profile_screen.dart';
+import 'package:colorie/theme/brand_colors.dart';
 import 'package:colorie/widgets/calorie_card.dart';
 import 'package:colorie/widgets/log_day.dart';
 import 'package:flutter/material.dart';
@@ -63,10 +64,10 @@ class HomeScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(24.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               const Text(
-                                'Welcome',
+                                'Colorie',
                                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                               ),
                               Padding(
@@ -78,9 +79,10 @@ class HomeScreen extends StatelessWidget {
                                       onTap: () => Navigator.of(context).push<dynamic>(
                                         MaterialPageRoute<dynamic>(builder: (BuildContext context) => ProfileScreen()),
                                       ),
-                                      child: const Placeholder(
-                                        fallbackHeight: 40,
-                                        fallbackWidth: 40,
+                                      child: Icon(
+                                        Icons.account_circle,
+                                        size: 48,
+                                        color: grey_2,
                                       ),
                                     ),
                                   ),
@@ -102,6 +104,7 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 ),
                                 child: CalorieCard(
+                                  enableDatePicker: true,
                                   log: selectedDayLog,
                                   calorieGoal: memberProvider.calorieGoal,
                                   borderRadius: const BorderRadius.all(Radius.circular(16)),
@@ -112,11 +115,11 @@ class HomeScreen extends StatelessWidget {
                         ),
                         if (lastSevenLogs.isNotEmpty)
                           const Padding(
-                            padding: EdgeInsets.only(top: 24, left: 24.0, bottom: 16),
+                            padding: EdgeInsets.only(top: 24, left: 24.0, bottom: 8),
                             child: Text(
-                              'Daily Log',
+                              'Last 7 Days',
                               style: TextStyle(
-                                fontSize: 24,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
